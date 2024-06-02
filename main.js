@@ -45,6 +45,27 @@ async function main() {
 
     titles.map((title) => console.log(title));
     console.log("---------------\n");
+
+    //Zadanie 3
+    console.log("Zadanie 3");
+
+    const group = {
+      $group: {
+        _id: "$titleType",
+        count: { $sum: 1 },
+      },
+    };
+    const result = await titleCollection
+      .aggregate([
+        { $match: { startYear: 2000 } },
+        group,
+        { $sort: { _id: 1 } },
+      ])
+      .toArray();
+    console.log(result);
+    result.map((t) => console.log(`Typ: ${t._id}, Liczba: ${t.count}`));
+
+    console.log("---------------\n");
   } catch (error) {
     console.log(error);
   } finally {
