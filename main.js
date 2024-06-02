@@ -155,6 +155,8 @@ async function main() {
           console.log("In progress...");
           break;
         case "7":
+          console.log("Zadanie 7");
+
           const maxAverageRating = await ratingCollection
             .aggregate([
               { $group: { _id: null, maxRating: { $max: "$averageRating" } } },
@@ -192,6 +194,8 @@ async function main() {
           console.log(
             `Dodano pole z wartością 1 dla filmów z najwyższą średnią oceną (${maxRating})`
           );
+          console.log("---------------\n");
+
           break;
         case "8":
           console.log("In progress...");
@@ -209,7 +213,16 @@ async function main() {
           console.log("In progress...");
           break;
         case "13":
-          console.log("In progress...");
+          console.log("Zadanie 13");
+
+          const deleteResult = await titleCollection.deleteMany({
+            startYear: { $lt: 1989 },
+          });
+          console.log(
+            `Usunięto ${deleteResult.deletedCount} dokumentów reprezentujących filmy wyprodukowane przed 1989 rokiem`
+          );
+          console.log("---------------\n");
+
           break;
         case "14":
           break;
