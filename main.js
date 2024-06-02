@@ -155,7 +155,43 @@ async function main() {
           console.log("In progress...");
           break;
         case "7":
-          console.log("In progress...");
+          const maxAverageRating = await ratingCollection
+            .aggregate([
+              { $group: { _id: null, maxRating: { $max: "$averageRating" } } },
+            ])
+            .toArray();
+          const maxRating = maxAverageRating[0].maxRating;
+          console.log("Get max rating " + maxRating);
+          const topRated = await ratingCollection
+            .aggregate([
+              { $match: { averageRating: maxRating } },
+              {
+                $lookup: {
+                  from: "Title",
+                  localField: "tconst",
+                  foreignField: "tconst",
+                  as: "title_info",
+                },
+              },
+              { $unwind: "$title_info" },
+            ])
+            .toArray();
+
+          console.log("Get top rated");
+
+          const updatedTopRated = topRated.map((movie) =>
+            titleCollection.updateOne(
+              { tconst: movie.title_info.tconst },
+              { $set: { max: 1 } }
+            )
+          );
+          console.log("update");
+
+          await Promise.all(updatedTopRated);
+
+          console.log(
+            `Dodano pole z wartością 1 dla filmów z najwyższą średnią oceną (${maxRating})`
+          );
           break;
         case "8":
           console.log("In progress...");
