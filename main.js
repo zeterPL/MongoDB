@@ -1,6 +1,23 @@
 const { MongoClient } = require("mongodb");
 const readline = require("readline");
 
+const menuText = `Wybierz numer zadania do wykonania:
+1. Zadanie 1
+2. Zadanie 2
+3. Zadanie 3
+4. Zadanie 4
+5. Zadanie 5
+6. Zadanie 6
+7. Zadanie 7
+8. Zadanie 8
+9. Zadanie 9
+10. Zadanie 10
+11. Zadanie 11
+12. Zadanie 12
+13. Zadanie 13
+14. Wyjście
+Twój wybór: `;
+
 // Funkcja do wczytywania danych z konsoli
 function prompt(question) {
   const rl = readline.createInterface({
@@ -29,22 +46,7 @@ async function main() {
 
     const exitNumber = "14";
     while (true) {
-      const choice = await prompt(`Wybierz numer zadania do wykonania:
-    1. Zadanie 1
-    2. Zadanie 2
-    3. Zadanie 3
-    4. Zadanie 4
-    5. Zadanie 5
-    6. Zadanie 6
-    7. Zadanie 7
-    8. Zadanie 8
-    9. Zadanie 9
-    10. Zadanie 10
-    11. Zadanie 11
-    12. Zadanie 12
-    13. Zadanie 13
-    14. Wyjście
-    Twój wybór: `);
+      const choice = await prompt(menuText);
       if (choice == exitNumber) return;
       switch (choice) {
         case "1":
@@ -182,7 +184,7 @@ async function main() {
   } catch (error) {
     console.log(error);
   } finally {
-    console.log("close");
+    console.log("close mongoDB connenction");
 
     await client.close();
   }
