@@ -121,6 +121,9 @@ async function main() {
                 },
               },
               {
+                $limit: 5,
+              },
+              {
                 $lookup: {
                   from: "Rating",
                   localField: "tconst",
@@ -142,9 +145,8 @@ async function main() {
             .toArray();
 
           console.log(result4);
-          const finalResult4 = result4.slice(0, 5);
 
-          finalResult4.map((t) => console.log(t));
+          result4.map((t) => console.log(t));
 
           console.log("---------------\n");
           break;
@@ -189,7 +191,7 @@ async function main() {
           );
           console.log("update");
 
-          await Promise.all(updatedTopRated);
+          //await Promise.all(updatedTopRated);
 
           console.log(
             `Dodano pole z wartością 1 dla filmów z najwyższą średnią oceną (${maxRating})`
@@ -198,8 +200,53 @@ async function main() {
 
           break;
         case "8":
-          console.log("In progress...");
+          console.log("Zadanie 8");
+
+          const title = await prompt("Podaj tytuł filmu: ");
+          const year = await prompt("Podaj rok produkcji: ");
+
+          const result8 = await titleCollection
+            .aggregate([
+              {
+                $match: {
+                  primaryTitle: title,
+                  startYear: parseInt(year),
+                },
+              },
+              {
+                $lookup: {
+                  from: "Rating",
+                  localField: "tconst",
+                  foreignField: "tconst",
+                  as: "rating_info",
+                },
+              },
+              {
+                $unwind: "$rating_info",
+              },
+              {
+                $project: {
+                  _id: 0,
+                  primaryTitle: 1,
+                  startYear: 1,
+                  averageRating: "$rating_info.averageRating",
+                },
+              },
+            ])
+            .toArray();
+
+          if (result8.length > 0) {
+            console.log("Wynik zapytania:");
+            result8.map((doc) => console.log(doc));
+          } else {
+            console.log(
+              "Nie znaleziono filmu o podanym tytule i roku produkcji."
+            );
+          }
+          console.log("---------------\n");
+
           break;
+
         case "9":
           console.log("In progress...");
           break;
