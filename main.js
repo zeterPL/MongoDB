@@ -257,7 +257,21 @@ async function main() {
           console.log("In progress...");
           break;
         case "12":
-          console.log("In progress...");
+          console.log("Zadanie 12");
+          const updateResult = await titleCollection.updateOne(
+            { primaryTitle: "Pan Tadeusz", startYear: 1999 },
+            { $set: { avgRating: 9.1 } },
+            { upsert: true }
+          );
+
+          if (updateResult.upsertedCount > 0) {
+            console.log("Film nie istniał. Dodano nowy dokument.");
+          } else if (updateResult.modifiedCount > 0) {
+            console.log("Film istniał. Zaktualizowano dokument.");
+          } else {
+            console.log("Nie dokonano żadnych zmian.");
+          }
+          console.log("---------------\n");
           break;
         case "13":
           console.log("Zadanie 13");
